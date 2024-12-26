@@ -66,6 +66,59 @@ class Corpus:
 
         return pd.DataFrame(resultats)
 
+    def nettoyer_texte(self, texte):
+        # Mise en minuscules
+        texte = texte.lower()
+        # Remplacement des passages à la ligne
+        texte = texte.replace("\n", " ")
+        # Suppression de la ponctuation et des chiffres
+        texte = re.sub(r"[^\w\s]", "", texte)
+        texte = re.sub(r"\d+", "", texte)
+        return texte
+
+    def construire_vocabulaire(self):
+        vocabulaire = set()
+        for doc in self.id2doc.values():
+            texte_nettoye = self.nettoyer_texte(doc.texte)
+            mots = re.split(r"\s+", texte_nettoye)
+            vocabulaire.update(mots)
+        return {mot: 0 for mot in vocabulaire if mot}  # Exclure les chaînes vides
+
+    def compter_occurrences(self):
+        vocabulaire = self.construire_vocabulaire()
+        doc_freq = {mot: 0 for mot in vocabulaire}
+
+        for doc in self.id2doc.values():
+            texte_nettoye = self.nettoyer_texte(doc.texte)
+            mots = re.split(r"\s+", texte_nettoye)
+            mots_uniques = set(mots)
+            for mot in mots:
+                if mot in vocabulaire:
+                    vocabulaire[mot] += 1
+            for mot in mots_uniques:
+                if mot in doc_freq:
+                    doc_freq[mot] += 1
+
+        freq_df = pd.DataFrame(
+            {
+                "mot": vocabulaire.keys(),
+                "frequence": vocabulaire.values(),
+                "doc_frequency": [doc_freq[mot] for mot in vocabulaire],
+            }
+        )
+        freq_df = freq_df.sort_values("frequence", ascending=False).reset_index(
+            drop=True
+        )
+        return freq_df
+
+    def stats(self, n=10):
+        freq_df = self.compter_occurrences()
+        nb_mots_differents = len(freq_df)
+
+        print(f"Nombre de mots différents dans le corpus : {nb_mots_differents}")
+        print(f"\n{n} mots les plus fréquents :")
+        print(freq_df.head(n).to_string(index=False))
+
 
 class SingletonCorpus(Corpus):
     _instance = None
