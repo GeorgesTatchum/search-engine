@@ -8,7 +8,7 @@ import re
 
 from td3.td3 import load_docs
 from td4.Author import Author
-from td4.Corpus import SingletonCorpus
+from td4.Corpus import Corpus
 from td4.Document import Document
 
 id2aut = {}
@@ -43,8 +43,9 @@ def add_to_id2aut(title: str, author: str) -> None:
         id2aut[str(author).lower()].add(title)
 
 
-def init_corpus(collection: dict, id2aut: dict) -> SingletonCorpus:
-    corpus = SingletonCorpus.get_instance()
+def init_corpus(collection: dict, id2aut: dict) -> Corpus:
+    corpus = Corpus(nom="corpus")
+    print("start the corps : ", corpus)
     corpus.id2doc = collection
     corpus.authors = id2aut
     corpus.ndoc = len(collection)

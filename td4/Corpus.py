@@ -133,3 +133,6 @@ class SingletonCorpus(Corpus):
         if SingletonCorpus._instance is not None:
             raise Exception("This class is a singleton!")
         super().__init__(nom)
+
+    def search(self, keyword):
+        return super().search(keyword)

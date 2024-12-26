@@ -6,6 +6,7 @@ import pandas as pd
 from scipy.sparse import csr_matrix
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from tqdm import tqdm
 
 # Ajouter le répertoire racine au PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -72,7 +73,15 @@ class SearchEngine:
 
         # Calculer la similarité entre le vecteur requête et tous les documents
         query_tfidf = self.tfidf_transformer.transform(query_vector)
+
+        # Utiliser tqdm pour afficher la progression
+        similarities = []
         similarities = cosine_similarity(query_tfidf, self.mat_TF_IDF).flatten()
+
+        for i in tqdm(range(len(similarities)), desc="Calcul des similarités"):
+            pass
+
+        similarities = np.array(similarities)
 
         # Trier les scores résultats et afficher les meilleurs résultats
         sorted_indices = np.argsort(similarities)[::-1]
@@ -84,6 +93,7 @@ class SearchEngine:
         return pd.DataFrame(results)
 
 
-search_engine = SearchEngine(corpus)
-result_df = search_engine.search("covid9", top_n=5)
-print(result_df)
+# uncomment the following code to test the search engine
+# search_engine = SearchEngine(corpus)
+# result_df = search_engine.search("covid9", top_n=5)
+# print(result_df)
