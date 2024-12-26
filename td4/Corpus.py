@@ -1,5 +1,7 @@
 import re
 
+import pandas as pd
+
 from td4.Author import Author
 
 
@@ -40,9 +42,29 @@ class Corpus:
         self._full_text = " ".join(doc.texte for doc in self.id2doc.values())
 
     def search(self, keyword):
-        if self._full_text is None:
+        if not hasattr(self, "_full_text") or self._full_text is None:
             self._build_full_text()
         return re.findall(rf"\b{re.escape(keyword)}\b", self._full_text)
+
+    def concorde(self, motif, taille_contexte=5):
+        if not hasattr(self, "_full_text") or self._full_text is None:
+            self._build_full_text()
+
+        resultats = []
+        for match in re.finditer(rf"\b{re.escape(motif)}\b", self._full_text):
+            debut = max(0, match.start() - taille_contexte)
+            fin = min(len(self._full_text), match.end() + taille_contexte)
+            contexte_gauche = self._full_text[debut : match.start()]
+            contexte_droit = self._full_text[match.end() : fin]
+            resultats.append(
+                {
+                    "contexte gauche": contexte_gauche,
+                    "motif trouvé": match.group(),
+                    "contexte droit": contexte_droit,
+                }
+            )
+
+        return pd.DataFrame(resultats)
 
 
 class SingletonCorpus(Corpus):
