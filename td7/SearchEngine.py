@@ -94,6 +94,6 @@ class SearchEngine:
 
 
 # uncomment the following code to test the search engine
-# search_engine = SearchEngine(corpus)
-# result_df = search_engine.search("covid9", top_n=5)
-# print(result_df)
+search_engine = SearchEngine(corpus)
+result_df = search_engine.search("pandemic", top_n=5)
+print(result_df)

@@ -17,7 +17,7 @@ class Document:
 class RedditDocument(Document):
     def __init__(self, titre, auteur, date, url, texte):
         type = "reddit"
-        super().__init__(self, titre, auteur, date, url, texte, type)
+        super().__init__(titre, auteur, date, url, texte, type)
         self.nbr_commentaires = 0
 
     def __str__(self):

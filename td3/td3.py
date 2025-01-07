@@ -24,8 +24,6 @@ def get_reddit_data(search_query: str) -> None:
 
     for i, post in enumerate(posts):
         if post.selftext != "":
-            print(f"Post {i}: {post.title} by {post.author}")
-            print(f"Post {i}: {post.__dict__}")
             textes_reddit.append(
                 {
                     "origin": "reddit",

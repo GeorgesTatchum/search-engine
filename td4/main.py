@@ -60,40 +60,40 @@ def split_paragraph_into_sentences(paragraph: str) -> list:
     return [sentence.strip() for sentence in sentences if sentence.strip()]
 
 
-if __name__ == "__main__":
-    data = load_docs()
-    print(data.info())
-    for author, origin, title, date, text, url in data[
-        ["author", "origin", "title", "date", "text", "url"]
-    ].values:
-        collection[str(start_index_collection)] = Document(
-            titre=title,
-            auteur=author,
-            date=date,
-            url=url,
-            texte=text,
-            type=origin.upper(),
-        )
-        # collection[str(start_index_collection)] = DocumentFactory.create_document(
-        #     doc_type=origin.lower(),
-        #     titre=title,
-        #     auteur=author,
-        #     date=date,
-        #     url=url,
-        #     texte=text,
-        # )
-        start_index_collection += 1
-        if origin == "reddit":
-            add_to_id2aut(title=title, author=author)
-        if origin == "arxiv":
-            list_authors = convert_to_list(author)
-            for l_auth in list_authors:
-                print(f"l_auth: {l_auth}")
-                add_to_id2aut(title=title, author=l_auth)
+# if __name__ == "__main__":
+data = load_docs()
+print(data.info())
+for author, origin, title, date, text, url in data[
+    ["author", "origin", "title", "date", "text", "url"]
+].values:
+    collection[str(start_index_collection)] = Document(
+        titre=title,
+        auteur=author,
+        date=date,
+        url=url,
+        texte=text,
+        type=origin.upper(),
+    )
+    # collection[str(start_index_collection)] = DocumentFactory.create_document(
+    #     doc_type=origin.lower(),
+    #     titre=title,
+    #     auteur=author,
+    #     date=date,
+    #     url=url,
+    #     texte=text,
+    # )
+    start_index_collection += 1
+    if origin == "reddit":
+        add_to_id2aut(title=title, author=author)
+    if origin == "arxiv":
+        list_authors = convert_to_list(author)
+        for l_auth in list_authors:
+            print(f"l_auth: {l_auth}")
+            add_to_id2aut(title=title, author=l_auth)
 
-    print(len(id2aut))
-    print(len(collection))
+print(len(id2aut))
+print(len(collection))
 
-    corpus = init_corpus(collection, id2aut)
+corpus = init_corpus(collection, id2aut)
 
-    print("the corps is:", corpus)
+print("the corps is:", corpus)
